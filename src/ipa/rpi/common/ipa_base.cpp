@@ -747,6 +747,9 @@ void IpaBase::applyControls(const ControlList &controls)
 		LOG(IPARPI, Debug) << "Request ctrl: "
 				   << controls::controls.at(ctrl.first)->name()
 				   << " = " << ctrl.second.toString();
+		std::cout << "Request ctrl: "
+				   << controls::controls.at(ctrl.first)->name()
+				   << " = " << ctrl.second.toString() << std::endl;
 
 		switch (ctrl.first) {
 		case controls::AE_ENABLE: {
@@ -775,7 +778,6 @@ void IpaBase::applyControls(const ControlList &controls)
 					<< "Could not set EXPOSURE_TIME - no AGC algorithm";
 				break;
 			}
-
 			/* The control provides units of microseconds. */
 			agc->setFixedShutter(0, ctrl.second.get<int32_t>() * 1.0us);
 
@@ -1254,6 +1256,17 @@ void IpaBase::applyControls(const ControlList &controls)
 			break;
 		}
 	}
+
+	// FIXME!!! FORCE CONTROL OF CAMERA
+	RPiController::AgcAlgorithm *agc = dynamic_cast<RPiController::AgcAlgorithm *>(
+		controller_.getAlgorithm("agc"));
+	if (!agc) {
+		LOG(IPARPI, Warning)
+			<< "Could not set EXPOSURE_TIME - no AGC algorithm";
+	}
+	/* The control provides units of microseconds. */
+	agc->setFixedShutter(0, 1000 * 1.0us);
+	libcameraMetadata_.set(controls::ExposureTime, 1000);
 
 	/* Give derived classes a chance to examine the new controls. */
 	handleControls(controls);
