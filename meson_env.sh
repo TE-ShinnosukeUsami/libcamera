@@ -1,0 +1,1 @@
+meson devenv -C build
