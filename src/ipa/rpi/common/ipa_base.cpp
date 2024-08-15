@@ -1269,7 +1269,7 @@ void IpaBase::applyControls(const ControlList &controls)
 	libcameraMetadata_.set(controls::ExposureTime, 1000);
 
 	// FPS
-	applyFrameDurations(10000 * 1.0us, 10000 * 1.0us);
+	applyFrameDurations(30000 * 1.0us, 30000 * 1.0us);
 
 	/* Give derived classes a chance to examine the new controls. */
 	handleControls(controls);
